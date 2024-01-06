@@ -1,67 +1,96 @@
-% Program generujący figury geometryczne 2D w MATLABie przy użyciu funkcji polyshape
 
-% Wyczyszczenie okna komend
 clc;
 clear;
 
-% Wybór figury
-disp('Wybierz figurę:');
-disp('1. Kwadrat');
-disp('2. Prostokąt');
-disp('3. Trójkąt');
-disp('4. Koło');
+% Choose shape
+disp('Choose shape:');
+disp('1. Square');
+disp('2. Rectangle');
+disp('3. Equilateral triangle');
+disp('4. Isosceles triangle');
+disp('5. Rectangular triangle');
+disp('6. Circle');
 
-choice = input('Wprowadź numer figury: ');
+choice = input('Enter shape number: ');
 
 switch choice
     case 1
-        % Kwadrat
-        side_length = input('Podaj długość boku kwadratu: ');
-        square = polyshape([0, 0, side_length, side_length], [0, side_length, side_length, 0]);
+        % Square
+        side_length = input('Enter the length of the side of the square: ');
+        vertices_x = [0, 0, side_length, side_length];
+        vertices_y = [0, side_length, side_length, 0];
+        square = polyshape(vertices_x, vertices_y);
         shape = square;
 
     case 2
-        % Prostokąt
-        length_rect = input('Podaj długość prostokąta: ');
-        width_rect = input('Podaj szerokość prostokąta: ');
-        rectangle = polyshape([0, length_rect, length_rect, 0], [0, 0, width_rect, width_rect]);
+        % Rectangle
+        length_rect = input('Enter the length of the rectangle: ');
+        width_rect = input('Enter the width of the rectangle: ');
+        vertices_x = [0, length_rect, length_rect, 0];
+        vertices_y = [0, 0, width_rect, width_rect];
+        rectangle = polyshape(vertices_x, vertices_y);
         shape = rectangle;
 
     case 3
-        % Trójkąt
-        side_length = input('Podaj długość boku trójkąta równobocznego: ');
+        % Equilateral triangle
+        side_length = input('Enter the length of the side of an equilateral triangle: ');
         height = side_length * sqrt(3) / 2;
-        triangle = polyshape([0, side_length, side_length / 2], [0, 0, height]);
-        shape = triangle;
-
+        vertices_x = [0, side_length, side_length / 2];
+        vertices_y = [0, 0, height];
+        equi_triangle = polyshape(vertices_x, vertices_y);
+        shape = equi_triangle;
+    
     case 4
-        % Koło
-        radius = input('Podaj promień koła: ');
+        % Isosceles triangle
+        side_length = input('Enter the length of the side of an isosceles triangle: ');
+        base_length = input('Enter the length of the base of an isosceles triangle: ');
+        height = sqrt(side_length^2 - (base_length/2)^2);
+        vertices_x = [0, base_length/2, base_length];
+        vertices_y = [0, height, 0];
+        iso_triangle = polyshape(vertices_x, vertices_y);
+        shape = iso_triangle;
+    
+    case 5
+        % Rectangular triangle
+        sidea_length = input('Enter the length of the side a of an rectangular triangle: ');
+        sideb_length = input('Enter the length of the side b of an rectangular triangle: ');
+        vertices_x = [0, 0, sideb_length];
+        vertices_y = [0, sidea_length, 0];
+        rec_triangle = polyshape(vertices_x, vertices_y);
+        shape = rec_triangle;
+
+    case 6
+        % Circle
+        radius = input('Enter the radius of the circle: ');
         theta = linspace(0, 2*pi, 100);
-        circle_x = radius * cos(theta);
-        circle_y = radius * sin(theta);
-        circle = polyshape(circle_x, circle_y);
+        vertices_x = radius * cos(theta);
+        vertices_y = radius * sin(theta);
+        circle = polyshape(vertices_x, vertices_y);
         shape = circle;
 
     otherwise
-        disp('Nieprawidłowy wybór figury.');
+        disp('WRONG INPUT');
 end
-% Wybór punktu obrotu
-rotation_point_x = input('Podaj współrzędną x punktu obrotu: ');
-rotation_point_y = input('Podaj współrzędną y punktu obrotu: ');
+% Pivot point
+rotation_point_x = input('Enter the x coordinate of the pivot point: ');
+rotation_point_y = input('Enter the y coordinate of the pivot point: ');
 
-% Kąt rotacji
-rotation_angle = input('Podaj kąt rotacji w stopniach: ');
+% Rotation angle
+rotation_angle = 0;
 
-% Rotacja figury
-rotated_shape = rotate(shape, rotation_angle, [rotation_point_x, rotation_point_y]);
+% Max distance between shape vertices and pivot point
+max_distance = max(sqrt((vertices_x - rotation_point_x).^2 + (vertices_y - rotation_point_y).^2));
 
-% Wyświetlenie figur
+% Visualization
 figure;
-plot(shape);
-hold on;
-plot(rotated_shape);
-title('Figura przed i po rotacji');
-axis equal;
-legend('Przed rotacją', 'Po rotacji');
-hold off;
+
+while ishandle(1)
+    rotation_angle = rotation_angle + 0.02;
+    shape = rotate(shape, rotation_angle, [rotation_point_x, rotation_point_y]);
+    plot(shape);
+    grid on;
+    axis equal;
+    title('Shape rotation');
+    axis([rotation_point_x - max_distance, rotation_point_x + max_distance, rotation_point_y - max_distance, rotation_point_y + max_distance]);
+    pause(0.01);
+end
