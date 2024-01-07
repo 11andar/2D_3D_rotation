@@ -10,6 +10,7 @@ disp('3. Equilateral triangle');
 disp('4. Isosceles triangle');
 disp('5. Rectangular triangle');
 disp('6. Circle');
+disp('7. Regular polygon');
 
 choice = input('Enter shape number: ');
 
@@ -68,6 +69,17 @@ switch choice
         circle = polyshape(vertices_x, vertices_y);
         shape = circle;
 
+    case 7
+        % Regular polygon
+        vertices_num = input('Enter the number of vertices of the polygon: ');
+        radius = input('Enter the radius of the polygon: ');
+        polygon_angle = 2 * pi / vertices_num;
+        theta = 0:polygon_angle:(2*pi - polygon_angle);
+        vertices_x = radius * cos(theta);
+        vertices_y = radius * sin(theta);
+        reg_polygon = polyshape(vertices_x, vertices_y);
+        shape = reg_polygon;
+
     otherwise
         disp('WRONG INPUT');
 end
@@ -83,7 +95,6 @@ max_distance = max(sqrt((vertices_x - rotation_point_x).^2 + (vertices_y - rotat
 
 % Visualization
 figure;
-
 while ishandle(1)
     rotation_angle = rotation_angle + 0.02;
     shape = rotate(shape, rotation_angle, [rotation_point_x, rotation_point_y]);
